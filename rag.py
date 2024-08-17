@@ -1,4 +1,4 @@
-import psycopg2
+# import psycopg2
 import chromadb
 import os
 from sklearn.metrics.pairwise import cosine_similarity
@@ -10,52 +10,52 @@ from chromadb.config import Settings
 import deeplake
 # from chromadb.models import Collection
 # from generate_embedding import generate_embedding
-def rag_using_postgres(query_embedding):
-    top_posts = None
-    relevant_comments = []
-    conn = psycopg2.connect(
-        dbname="reddit_db_1",
-        user="codespace",
-        password="your_new_password",
-        host="localhost",
-        port="5432"
-    )
-    cur = conn.cursor()
-    query_vector = f"[{','.join(map(str, query_embedding))}]"
-    cur.execute(f"""
-        SELECT id, title_content, embedding <=> '{query_vector}'::vector AS distance
-        FROM posts
-        ORDER BY distance DESC
-        LIMIT 10;
-    """)
-    top_posts = cur.fetchall()
-    if (top_posts is not None):
-        # import pdb;pdb.set_trace()
-        # print (top_posts)
-        pass
-    elif len(top_posts) < 1:
-        print ("top posts cannot be retrieved for RAG")
-        import pdb;pdb.set_trace()
-    else:
-        print ("top posts cannot be retrieved for RAG")
-        import pdb;pdb.set_trace()
+# def rag_using_postgres(query_embedding):
+#     top_posts = None
+#     relevant_comments = []
+#     conn = psycopg2.connect(
+#         dbname="reddit_db_1",
+#         user="codespace",
+#         password="your_new_password",
+#         host="localhost",
+#         port="5432"
+#     )
+#     cur = conn.cursor()
+#     query_vector = f"[{','.join(map(str, query_embedding))}]"
+#     cur.execute(f"""
+#         SELECT id, title_content, embedding <=> '{query_vector}'::vector AS distance
+#         FROM posts
+#         ORDER BY distance DESC
+#         LIMIT 10;
+#     """)
+#     top_posts = cur.fetchall()
+#     if (top_posts is not None):
+#         # import pdb;pdb.set_trace()
+#         # print (top_posts)
+#         pass
+#     elif len(top_posts) < 1:
+#         print ("top posts cannot be retrieved for RAG")
+#         import pdb;pdb.set_trace()
+#     else:
+#         print ("top posts cannot be retrieved for RAG")
+#         import pdb;pdb.set_trace()
 
-    post_ids_list = [i[0] for i in top_posts]
-    if len(post_ids_list):
-        for post_id in post_ids_list:
-            cur.execute("""
-                         SELECT content from comments where post_id = %s;""", (post_id,))
-            relevant_comments.extend([row[0] for row in cur.fetchall()])
-    else:
-        print ("top post ids cannot be retrieved for RAG")
-        import pdb;pdb.set_trace()
+#     post_ids_list = [i[0] for i in top_posts]
+#     if len(post_ids_list):
+#         for post_id in post_ids_list:
+#             cur.execute("""
+#                          SELECT content from comments where post_id = %s;""", (post_id,))
+#             relevant_comments.extend([row[0] for row in cur.fetchall()])
+#     else:
+#         print ("top post ids cannot be retrieved for RAG")
+#         import pdb;pdb.set_trace()
 
-    if len(relevant_comments):
-        return relevant_comments
-    else:
-        print ("relevant comments cannot be retrieved for RAG")
-        import pdb;pdb.set_trace()
-        return None
+#     if len(relevant_comments):
+#         return relevant_comments
+#     else:
+#         print ("relevant comments cannot be retrieved for RAG")
+#         import pdb;pdb.set_trace()
+#         return None
 def rag_using_deeplake(query_embedding,post_comment_mapping):
     relevant_comments = []
     dataset = deeplake.load('./deeplake_posts')
