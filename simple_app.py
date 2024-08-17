@@ -2,7 +2,7 @@
 import streamlit as st
 from read_parameters import load_parameters
 from generate_embedding import generate_embedding
-from insert_data_into_db import insert_into_db_main
+# from insert_data_into_db import insert_into_db_main
 from download_reddit_posts import download_data_main
 from insert_data_into_vector_stores import insert_data_into_vector_stores_main
 from rag import rag_main_func
