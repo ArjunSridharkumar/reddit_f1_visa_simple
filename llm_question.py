@@ -11,7 +11,6 @@ memory = ConversationBufferMemory()
 def build_prompt(query,context):
     prompt_template = """
     You are an F1 visa expert and an immigration consultant. The CONTEXT contains relevant information.
-    Use the CONTEXT to answer the question as much as possible.
     If the CONTEXT does not contain the answer, give a concise answer.
     Question: {question}
 
