@@ -83,9 +83,10 @@ def rag_using_chroma(query_embedding,post_comment_mapping):
     # client = Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory="."))
     # print ("list collection", chroma_client.list_collection())
     print ("list collection",chroma_client.list_collections())
-    posts_collection = chroma_client.get_collection("posts")
+    
     import os
     print (os.listdir())
+    posts_collection = chroma_client.get_collection("posts")
     # comments_collection = client.get_collection("comments")
     search_results = posts_collection.query(query_embeddings=[query_embedding], n_results=10)
     for result in search_results['ids'][0]:
