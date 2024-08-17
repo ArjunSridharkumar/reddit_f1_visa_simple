@@ -1,3 +1,5 @@
+import sys
+print("sys.version",sys.version)
 import sqlite3
 print ("sqlite3 version",sqlite3.sqlite_version)
 import streamlit as st
