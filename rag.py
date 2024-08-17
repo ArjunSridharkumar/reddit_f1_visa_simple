@@ -79,7 +79,7 @@ def rag_using_deeplake(query_embedding,post_comment_mapping):
 def rag_using_chroma(query_embedding,post_comment_mapping):
     # import pdb;pdb.set_trace()
     relevant_comments = []
-    chroma_client = chromadb.PersistentClient("./chroma")
+    chroma_client = chromadb.PersistentClient("./chroma_1")
     # client = Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory="."))
     # print ("list collection", chroma_client.list_collection())
     print ("list collection",chroma_client.list_collections())
