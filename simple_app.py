@@ -1,5 +1,5 @@
 import sqlite3
-print ("sqlite3 version",sqlite3.version)
+print ("sqlite3 version",sqlite3.sqlite_version)
 import streamlit as st
 from read_parameters import load_parameters
 from generate_embedding import generate_embedding
