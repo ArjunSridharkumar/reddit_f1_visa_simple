@@ -117,6 +117,6 @@ if st.button("Ask the LLM"):
     st.write("Processing your query...")
     # response = llm_question_main(query, parameters)
     st.write(f"LLM Response: {response}")
-    st.write("Conversation History:")
-    st.write(memory.chat_memory())
+    # st.write("Conversation History:")
+    # st.write(memory.chat_memory())
 
