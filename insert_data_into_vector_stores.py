@@ -1,8 +1,9 @@
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from generate_embedding import generate_embedding
-from insert_data_into_db import extract_post_comments_from_the_pdf
+# from insert_data_into_db import extract_post_comments_from_the_pdf
 import chromadb
 import numpy as np
+import re
 from chromadb.config import Settings
 from chromadb import Client
 from chromadb.utils import embedding_functions
@@ -14,6 +15,44 @@ import deeplake
 #     search_params = {"metric_type": "L2", "params": {"nprobe": 10}}
 #     results = collection.search([query_embedding], "embedding", param=search_params, limit=3, expr=None)
 #     return results
+def extract_post_comments_from_the_pdf(pdf_path):
+    with fitz.open(pdf_path) as doc:
+        text = ""
+        for page in doc:
+            text += page.get_text()
+
+    posts_pattern = r"Title of the post:(.*?)(?=Title of the post:|\Z)"
+    posts = re.findall(posts_pattern, text, re.DOTALL)
+    posts_dict = {}
+    for post_value in tqdm(posts):
+        #Get title and body
+        title_to_body_pattern = r"(.*?)(?=Comment of the post: |\Z)"
+        title_to_body = re.findall(title_to_body_pattern, post_value, re.DOTALL)
+        try:
+            title_to_body = title_to_body[0]
+        except Exception as e:
+            import pdb;pdb.set_trace()
+        # if len(title_to_body) > 1:
+        #     import pdb;pdb.set_trace()
+        #Get comments - outputs as a string.
+        list_of_comments = []
+        comments_to_title_pattern = r"Comment of the post:(.*?)(?=Title of the post:|\Z)"
+        comments = re.findall(comments_to_title_pattern, post_value, re.DOTALL)
+
+        #Get individual comments
+        if len(comments) > 0:
+            individual_comments_pattern = r"New Comment: (.*?)(?=New Comment: |\Z)"
+            individual_comments = re.findall(individual_comments_pattern,comments[0], re.DOTALL)
+        list_of_comments = [i for i in individual_comments if len(i) > 0]
+        # if len(individual_comments) > 0:
+        #     import pdb;pdb.set_trace()
+        if title_to_body in posts_dict.keys():
+            import pdb;pdb.set_trace()
+
+        posts_dict[title_to_body] = list_of_comments
+    return posts_dict
+
+
 
 def insert_into_deeplake(pdf_file_name, EMBEDDING_MODEL_NAME, EMBEDDING_MAX_TOKENS):
     deeplake_cloud_path ="hub://arjunskumar2021/reddit_embeddings_1"
