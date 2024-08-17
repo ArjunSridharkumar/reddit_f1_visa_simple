@@ -55,14 +55,14 @@ def llm_model_open_source(prompt):
     return response
 
 def llm_question_main(query,context,LLM_MODEL_NAME):
-    past_interactions = " ".join([f"{msg['role']}: {msg['content']}" for msg in memory.chat_memory.messages])
-    context += " " + past_interactions
+    # past_interactions = " ".join([f"{msg['role']}: {msg['content']}" for msg in memory.chat_memory.messages])
+    # context += " " + past_interactions
     prompt = build_prompt(query,context)
     if LLM_MODEL_NAME != "microsoft/Phi-3-Medium-4K-Instruct":
         response = llm_model_gpt(prompt)
     else:
         response = llm_model_open_source(prompt)
-    memory.save_context({"user": query}, {"AI": response})
+    # memory.save_context({"user": query}, {"AI": response})
     return response
 
 # context = processed_text
